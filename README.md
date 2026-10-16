@@ -279,3 +279,19 @@ Devops-capstone/
 | [M6-trivy-scan.png](demo/screenshots/M6-trivy-scan.png) | Trivy scan: 0 HIGH / 0 CRITICAL in both images |
 | [M8-swagger-docs.png](demo/screenshots/M8-swagger-docs.png) | Swagger API documentation |
 | [M9-backend-metrics.png](demo/screenshots/M9-backend-metrics.png) | Prometheus metrics exposed by the backend |
+| [M3-github-commit-history.png](demo/screenshots/M3-github-commit-history.png) | Commit history, including the bot's GitOps image-pin commits |
+| [M5-github-actions-success.png](demo/screenshots/M5-github-actions-success.png) | Green GitHub Actions run (all 5 jobs) |
+| [M5-github-actions-history.png](demo/screenshots/M5-github-actions-history.png) | Workflow run history |
+| [M5-ghcr-packages.png](demo/screenshots/M5-ghcr-packages.png) · [M5-ghcr-backend-package.png](demo/screenshots/M5-ghcr-backend-package.png) | GHCR images tagged with commit SHAs |
+| [M7-terraform-validate.png](demo/screenshots/M7-terraform-validate.png) | `terraform init`, `fmt -check` and `validate` |
+| [M8-kubernetes-pods.png](demo/screenshots/M8-kubernetes-pods.png) | Nodes and pods (0 restarts) |
+| [M8-kubernetes-services.png](demo/screenshots/M8-kubernetes-services.png) | Services, Ingress, PVC and endpoints |
+| [M8-helm-release.png](demo/screenshots/M8-helm-release.png) | Helm release, history and deployed image SHAs |
+| [M8-ingress-application.png](demo/screenshots/M8-ingress-application.png) | App served through the Ingress |
+| [M9-prometheus-targets.png](demo/screenshots/M9-prometheus-targets.png) | Prometheus targets UP |
+| [M9-prometheus-query.png](demo/screenshots/M9-prometheus-query.png) | Request rate per endpoint in Prometheus |
+| [M9-grafana-dashboard.png](demo/screenshots/M9-grafana-dashboard.png) | Grafana dashboard with live traffic |
+| [M10-troubleshooting-imagepullbackoff.png](demo/screenshots/M10-troubleshooting-imagepullbackoff.png) | Drill 1: ImagePullBackOff diagnosed and fixed |
+| [M10-troubleshooting-service-selector.png](demo/screenshots/M10-troubleshooting-service-selector.png) | Drill 2: Service selector mismatch diagnosed and fixed |
+
+> The Kubernetes, Helm, Ingress, Prometheus and Grafana screenshots come from a local 3-node [kind](https://kind.sigs.k8s.io/) cluster that pulls the CI-built images from GHCR. The AWS EKS deployment (`terraform apply`) still needs AWS credentials. On kind, install with `--set namespace.create=false --set database.persistence.storageClass=standard`.
