@@ -18,7 +18,9 @@ RUN npm run build
 # ==========================================
 FROM nginxinc/nginx-unprivileged:alpine AS runtime
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# The entrypoint renders templates/*.template into conf.d at start-up
+ENV NGINX_ENTRYPOINT_LOCAL_RESOLVERS=1
+COPY templates/ /etc/nginx/templates/
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 8080
