@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devtrack-backend
+  namespace: devtrack
+  labels:
+    app.kubernetes.io/name: devtrack-backend
+    app.kubernetes.io/part-of: devtrack
+    app.kubernetes.io/component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: devtrack-backend
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP

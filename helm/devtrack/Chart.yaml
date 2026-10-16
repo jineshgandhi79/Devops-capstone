@@ -1,0 +1,13 @@
+apiVersion: v2
+name: devtrack
+description: A Helm chart for DevTrack Todo — a FastAPI + React todo application
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+home: https://github.com/jineshgandhi79/Devops-capstone
+sources:
+  - https://github.com/jineshgandhi79/Devops-capstone
+maintainers:
+  - name: Jinesh Gandhi
+    email: jineshgandhi79@gmail.com
+    url: https://github.com/jineshgandhi79

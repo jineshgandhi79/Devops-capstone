@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devtrack-frontend
+  namespace: devtrack
+  labels:
+    app.kubernetes.io/name: devtrack-frontend
+    app.kubernetes.io/part-of: devtrack
+    app.kubernetes.io/component: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: devtrack-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP

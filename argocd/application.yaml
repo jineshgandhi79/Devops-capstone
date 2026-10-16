@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devtrack
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: devtrack
+    app.kubernetes.io/part-of: devtrack
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/jineshgandhi79/Devops-capstone.git
+    targetRevision: main
+    path: helm/devtrack
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devtrack
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+      - ApplyOutOfSyncOnly=true

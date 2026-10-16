@@ -1,0 +1,52 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devtrack-ingress
+  namespace: devtrack
+  labels:
+    app.kubernetes.io/name: devtrack-ingress
+    app.kubernetes.io/part-of: devtrack
+    environment: production
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "64m"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          # 1. API routes forwarded to FastAPI Backend
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: devtrack-backend
+                port:
+                  number: 8000
+
+          # 2. Swagger Documentation & OpenAPI Schema
+          - path: /docs
+            pathType: Prefix
+            backend:
+              service:
+                name: devtrack-backend
+                port:
+                  number: 8000
+
+          - path: /openapi.json
+            pathType: Exact
+            backend:
+              service:
+                name: devtrack-backend
+                port:
+                  number: 8000
+
+          # 3. Frontend Root route forwarded to React Web Dashboard
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: devtrack-frontend
+                port:
+                  number: 80

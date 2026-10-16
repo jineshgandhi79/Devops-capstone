@@ -1,0 +1,69 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: devtrack-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: devtrack
+    ports:
+      # Map host 5433 to container 5432 to prevent conflict with local host PostgreSQL
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d devtrack"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - devtrack-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: devtrack-backend
+    restart: unless-stopped
+    # Apply Alembic migrations first, then launch Uvicorn
+    command: >
+      sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/devtrack
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - devtrack-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: devtrack-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:8080"
+    depends_on:
+      - backend
+    networks:
+      - devtrack-network
+
+volumes:
+  postgres_data:
+    name: devtrack_postgres_data
+
+networks:
+  devtrack-network:
+    name: devtrack-network
+    driver: bridge

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devtrack-backend
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "devtrack.labels" . | nindent 4 }}
+    app.kubernetes.io/name: devtrack-backend
+    app.kubernetes.io/component: backend
+spec:
+  type: {{ .Values.backend.service.type }}
+  selector:
+    app.kubernetes.io/name: devtrack-backend
+  ports:
+    - name: http
+      port: {{ .Values.backend.service.port }}
+      targetPort: {{ .Values.backend.service.targetPort }}
+      protocol: TCP

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devtrack
+  labels:
+    app.kubernetes.io/name: devtrack
+    app.kubernetes.io/part-of: devtrack
+    environment: production

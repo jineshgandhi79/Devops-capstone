@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devtrack-config
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "devtrack.labels" . | nindent 4 }}
+    app.kubernetes.io/name: devtrack-config
+data:
+  ENVIRONMENT: {{ .Values.environment | quote }}
+  POSTGRES_DB: {{ .Values.database.name | quote }}
+  POSTGRES_USER: {{ .Values.database.user | quote }}
+  POSTGRES_HOST: "devtrack-postgres"
+  POSTGRES_PORT: {{ .Values.database.port | quote }}

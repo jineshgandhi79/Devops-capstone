@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devtrack-config
+  namespace: devtrack
+  labels:
+    app.kubernetes.io/name: devtrack-config
+    app.kubernetes.io/part-of: devtrack
+data:
+  ENVIRONMENT: "production"
+  POSTGRES_DB: "devtrack"
+  POSTGRES_USER: "postgres"
+  POSTGRES_HOST: "devtrack-postgres"
+  POSTGRES_PORT: "5432"

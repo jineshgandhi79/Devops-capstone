@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devtrack-monitoring
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: devtrack-monitoring
+    app.kubernetes.io/part-of: devtrack-observability
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/jineshgandhi79/Devops-capstone.git
+    targetRevision: main
+    path: monitoring
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+      - ApplyOutOfSyncOnly=true
