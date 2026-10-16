@@ -32,7 +32,7 @@ spec:
                 port:
                   number: {{ .Values.backend.service.port }}
           - path: /openapi.json
-            pathType: Exact
+            pathType: ImplementationSpecific  # Exact rejects "." under ingress-nginx >= 1.12 strict path validation
             backend:
               service:
                 name: devtrack-backend

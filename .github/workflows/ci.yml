@@ -109,15 +109,14 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.component }}
           cache-to: type=gha,mode=max,scope=${{ matrix.component }}
 
+      # Runs the pinned official Trivy image; a HIGH/CRITICAL finding fails the job
       - name: Trivy vulnerability & secret scan
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: ${{ env.IMAGE_PREFIX }}-${{ matrix.component }}:${{ github.sha }}
-          scanners: vuln,secret
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
-          exit-code: "1"
-          format: table
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:0.58.1 image \
+            --severity HIGH,CRITICAL --ignore-unfixed --scanners vuln,secret \
+            --exit-code 1 --format table \
+            ${{ env.IMAGE_PREFIX }}-${{ matrix.component }}:${{ github.sha }}
 
       - name: Log in to GHCR
         if: github.event_name != 'pull_request'
