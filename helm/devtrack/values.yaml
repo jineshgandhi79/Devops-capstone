@@ -43,6 +43,13 @@ backend:
     limits:
       cpu: "300m"
       memory: "256Mi"
+  # HorizontalPodAutoscaler (needs metrics-server). When enabled, the HPA owns the replica count.
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 60
+    scaleDownStabilizationSeconds: 120
 
 database:
   name: "devtrack"

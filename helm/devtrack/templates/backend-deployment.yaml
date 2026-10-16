@@ -9,7 +9,9 @@ metadata:
     app.kubernetes.io/component: backend
     environment: {{ .Values.environment }}
 spec:
+  {{- if not .Values.backend.autoscaling.enabled }}
   replicas: {{ .Values.backend.replicaCount }}
+  {{- end }}
   strategy:
     type: RollingUpdate
     rollingUpdate:

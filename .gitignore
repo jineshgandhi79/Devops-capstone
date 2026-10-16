@@ -30,6 +30,8 @@ dist-ssr/
 *.tfstate.*
 *.tfplan
 *.tfplan.*
+tfplan*
+*.tgz
 crash.log
 crash.*.log
 terraform.tfvars
