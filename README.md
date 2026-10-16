@@ -226,7 +226,21 @@ kubectl get pods,svc,ingress -n devtrack
 helm list -n devtrack
 ```
 
-GitOps with ArgoCD: `kubectl apply -f argocd/application.yaml` (tracks `helm/devtrack` on `main` of this repository).
+GitOps with ArgoCD: `kubectl apply -f argocd/application.yaml -f argocd/monitoring-application.yaml` (tracks `helm/devtrack` and `monitoring/` on `main`). Every green CI run commits a new image SHA to `values.yaml`, and ArgoCD rolls the cluster forward automatically.
+
+### Autoscaling (HPA)
+
+The backend has a HorizontalPodAutoscaler (2–6 replicas, 60 % CPU target, 2-minute scale-down window). It needs [metrics-server](https://github.com/kubernetes-sigs/metrics-server).
+
+```bash
+kubectl apply -f scripts/hpa-load-test.yaml      # 4 in-cluster load generators
+kubectl get hpa -n devtrack -w                   # watch replicas climb to 6
+kubectl delete -f scripts/hpa-load-test.yaml     # scale back down after ~2 minutes
+```
+
+### Local cluster (kind)
+
+The Kubernetes screenshots were taken on a 3-node [kind](https://kind.sigs.k8s.io/) cluster with ingress-nginx, metrics-server and ArgoCD 2.13. Because the chart requests the AWS `gp2` storage class, the kind cluster gets a `gp2` StorageClass backed by kind's `rancher.io/local-path` provisioner, so the chart deploys unchanged.
 
 ---
 
@@ -294,4 +308,8 @@ Devops-capstone/
 | [M10-troubleshooting-imagepullbackoff.png](demo/screenshots/M10-troubleshooting-imagepullbackoff.png) | Drill 1: ImagePullBackOff diagnosed and fixed |
 | [M10-troubleshooting-service-selector.png](demo/screenshots/M10-troubleshooting-service-selector.png) | Drill 2: Service selector mismatch diagnosed and fixed |
 
-> The Kubernetes, Helm, Ingress, Prometheus and Grafana screenshots come from a local 3-node [kind](https://kind.sigs.k8s.io/) cluster that pulls the CI-built images from GHCR. The AWS EKS deployment (`terraform apply`) still needs AWS credentials. On kind, install with `--set namespace.create=false --set database.persistence.storageClass=standard`.
+| [M8-argocd-applications.png](demo/screenshots/M8-argocd-applications.png) | ArgoCD: app and monitoring synced from this repository |
+| [M8-argocd-devtrack-tree.png](demo/screenshots/M8-argocd-devtrack-tree.png) | ArgoCD resource tree, synced to the bot's image-pin commit |
+| [M8-hpa-scaling.png](demo/screenshots/M8-hpa-scaling.png) | HPA scaling the backend from 2 to 6 replicas under load, then back down |
+
+> The Kubernetes, Helm, ArgoCD, HPA, Ingress, Prometheus and Grafana screenshots come from a local 3-node kind cluster that pulls the CI-built images from GHCR (see *Local cluster (kind)* above).

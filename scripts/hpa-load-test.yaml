@@ -1,0 +1,34 @@
+# Load generator for the HPA demo.
+#   kubectl apply -f scripts/hpa-load-test.yaml
+#   kubectl get hpa -n devtrack -w          # watch replicas grow
+#   kubectl delete -f scripts/hpa-load-test.yaml   # stop; HPA scales back down after ~2 min
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devtrack-load-generator
+  namespace: devtrack
+  labels:
+    app.kubernetes.io/name: devtrack-load-generator
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devtrack-load-generator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: devtrack-load-generator
+    spec:
+      containers:
+        - name: load
+          image: busybox:1.37
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              while true; do
+                wget -q -O /dev/null http://devtrack-backend:8000/api/todos/stats
+                wget -q -O /dev/null "http://devtrack-backend:8000/api/todos?search=deploy&sort=priority"
+              done
+          resources:
+            requests: {cpu: 20m, memory: 16Mi}
+            limits: {cpu: 200m, memory: 32Mi}
